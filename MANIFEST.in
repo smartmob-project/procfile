@@ -1,0 +1,4 @@
+include CONTRIBUTORS
+include LICENSE
+include README.rst
+include procfile/version.txt
