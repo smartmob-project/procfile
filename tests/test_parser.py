@@ -4,13 +4,13 @@
 import pytest
 
 from procfile import (
-    parse_procfile,
-    read_procfile,
+    loads,
+    loadfile,
 )
 
 
 def test_valid_procfile():
-    lines = parse_procfile('\n'.join([
+    lines = loads('\n'.join([
         'web: bundle exec rails server -p $PORT',
         'worker: env QUEUE=* bundle exec rake resque:work',
         'urgentworker: env QUEUE=urgent FOO=meh bundle exec rake resque:work',
@@ -29,7 +29,7 @@ def test_valid_procfile():
 
 def test_duplicate_process_types():
     with pytest.raises(ValueError) as error:
-        print(parse_procfile('\n'.join([
+        print(loads('\n'.join([
             'web: bundle exec rails server -p $PORT',
             'web: bundle exec rake resque:work',
         ])))
@@ -40,7 +40,7 @@ def test_duplicate_process_types():
 
 def test_duplicate_variable():
     with pytest.raises(ValueError) as error:
-        print(parse_procfile('\n'.join([
+        print(loads('\n'.join([
             'web: bundle exec rails server -p $PORT',
             'worker: env QUEUE=* QUEUE=urgent bundle exec rake resque:work',
         ])))

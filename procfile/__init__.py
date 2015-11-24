@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 
+"""Parser for Procfiles.
+
+Implements `Smartmob RFC 1 <http://smartmob-rfc.readthedocs.org/en/latest/1-procfile.html>`_."""
+
 
 import re
 
 from collections import namedtuple
 
 
-PROCFILE_LINE = re.compile(
+_PROCFILE_LINE = re.compile(
     ''.join([
         r'^(?P<process_type>.+?):\s*',
         r'(?:env(?P<environment>(?:\s+.+?=.+?)+)\s+)?',
@@ -44,7 +48,7 @@ def _group_lines(lines):
 
 def _parse_procfile_line(line):
     line = line.strip()
-    match = PROCFILE_LINE.match(line)
+    match = _PROCFILE_LINE.match(line)
     if match is None:
         raise ValueError('Invalid profile line "%s".' % line)
     parts = match.groupdict()
@@ -63,7 +67,8 @@ def _parse_procfile_line(line):
     )
 
 
-def parse_procfile(content):
+def loads(content):
+    """Load a Procfile from a string."""
     lines = _group_lines(line for line in content.split('\n'))
     lines = [
         (i, _parse_procfile_line(line))
@@ -93,7 +98,11 @@ def parse_procfile(content):
         raise ValueError(errors)
     return {k: {'cmd': cmd, 'env': env} for _, (k, cmd, env) in lines}
 
+def load(stream):
+    """Load a Procfile from a file-like object."""
+    return loads(stream.read().decode('utf-8'))
 
-def read_procfile(path):
+def loadfile(path):
+    """Load a Procfile from a file."""
     with open(path, 'rb') as stream:
-        return parse_procfile(stream.read().decode('utf-8'))
+        return load(stream)
