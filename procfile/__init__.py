@@ -96,7 +96,7 @@ def loads(content):
     # Done!
     if errors:
         raise ValueError(errors)
-    return {k: {'cmd': cmd, 'env': env} for _, (k, cmd, env) in lines}
+    return {k: {'cmd': cmd, 'env': dict(env)} for _, (k, cmd, env) in lines}
 
 def load(stream):
     """Load a Procfile from a file-like object."""
