@@ -16,14 +16,23 @@ def test_valid_procfile():
         'urgentworker: env QUEUE=urgent FOO=meh bundle exec rake resque:work',
     ]))
     assert lines == {
-        'web': {'cmd': 'bundle exec rails server -p $PORT', 'env': []},
-        'worker': {'cmd': 'bundle exec rake resque:work', 'env': [
-            ('QUEUE', '*'),
-        ]},
-        'urgentworker': {'cmd': 'bundle exec rake resque:work', 'env': [
-            ('QUEUE', 'urgent'),
-            ('FOO', 'meh'),
-        ]},
+        'web': {
+            'cmd': 'bundle exec rails server -p $PORT',
+            'env': {},
+        },
+        'worker': {
+            'cmd': 'bundle exec rake resque:work',
+            'env': {
+                'QUEUE': '*',
+            },
+        },
+        'urgentworker': {
+            'cmd': 'bundle exec rake resque:work',
+            'env': {
+                'QUEUE': 'urgent',
+                'FOO': 'meh',
+            },
+        },
     }
 
 

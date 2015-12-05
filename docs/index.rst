@@ -35,7 +35,7 @@ Getting started
    {
      "web": {
        "cmd": "gunicorn myapp.wsgi",
-       "env": []
+       "env": {}
      }
    }
 
